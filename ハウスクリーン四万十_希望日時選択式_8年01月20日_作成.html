@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ハウスクリーン四万十 予約フォーム</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        /* 右端の細いナビ（固定） */
+        .side-nav {
+            position: fixed;
+            right: -5px;
+            top: 80%;
+            transform: translateY(-50%) translateX(16px);
+            background: #45c4b7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px;
+            border-radius: 10px 0 0 10px;
+            z-index: 1000;
+            width: 35px;
+        }
+
+        .side-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 10px;
+            margin: 5px 0;
+            padding: 5px;
+            transition: background 0.3s, transform 0.2s;
+            border-radius: 5px;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+        }
+
+        .side-nav a span {
+            font-size: 24px;
+            position: absolute;
+            left: 2px;
+            top: 13px;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin: 0;
+            padding-top: 5px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background-color: #fdfdfd;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 96%;
+            max-width: 500px;
+            padding: 25px;
+            box-sizing: border-box;
+            margin: 0 auto;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #45c4b7, #45c4b7);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin: -20px -15px 20px -15px;
+            font-size: 24px;
+            font-weight: 100;
+        }
+
+        h3.category-title {
+            color: #3e3f41;
+            border-bottom: 2px solid #45c4b7;
+            padding-bottom: 5px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        h4.sub-title {
+            font-size: 14px;
+            color: #666;
+            margin: 10px 0 5px 0;
+        }
+
+        .label, .labelkibounitizi, .labeltyuuou, .labelmessezi {
+            display: block;
+            margin-bottom: 15px;
+            padding: 5px;
+            font-weight: 400;
+            background-color: #45c4b7;
+            color: #ffffff;
+            font-size: 18px;
+            text-align: center;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            position: relative;
+        }
+        
+        .labelkibounitizi { margin: 10px 0; }
+        .labelmessezi { margin-top: 30px; }
+
+        .required {
+            color: #ffffff;
+            font-weight: lighter;
+            font-size: 0.6em;
+            margin-left: 5px;
+            vertical-align: 0.8em;
+            background-color: rgb(255, 15, 15);
+            padding: 0 5px;
+            border-radius: 3px;
+        }
+
+        input[type="text"], input[type="tel"], textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #555555;
+            border-radius: 3px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .buttons-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .buttons-grid button {
+            flex: 1 1 45%; /* スマホで見やすいように2列配置 */
+            padding: 10px;
+            border: 1px solid #2e2e2e;
+            border-radius: 4px;
+            background-color: #f7f7f7;
+            cursor: pointer;
+            font-size: 13px; /* 文字数が多いので少し小さめに */
+            transition: all 0.2s;
+            line-height: 1.4;
+        }
+
+        .buttons-grid button.active {
+            background-color: #3e3f41;
+            color: #fff;
+            border-color: #45c4b7;
+            box-shadow: 0 0 0 2px #45c4b7;
+        }
+
+        /* 駐車場ボタン用 */
+        .parking-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .parking-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #2e2e2e;
+            background: #f7f7f7;
+            cursor: pointer;
+        }
+        .parking-buttons button.active {
+            background-color: #3e3f41;
+            color: #fff;
+            border-color: #45c4b7;
+        }
+
+        /* カレンダー関連 */
+        .datetime-wrapper { margin-bottom: 15px; }
+        .dt-grid { display: flex; gap: 8px; align-items: center; }
+        .datetime-input {
+            width: 100%; padding: 12px; font-size: 16px;
+            border: 1px solid #000; border-radius: 8px; background: #fff;
+            flex: 1;
+        }
+        .placeholder { display: block; font-size: 0.9em; color: #666; margin-bottom: 5px; }
+
+        /* 確認エリア */
+        #displayInfo { margin-bottom: 20px; }
+        .info-row {
+            display: flex; justify-content: space-between; align-items: center; margin: 10px 0;
+        }
+        .info-row p { margin: 0; font-size: 14px; line-height: 1.5; }
+        .edit-button {
+            background: #fff; border: 1px solid #000; padding: 4px 10px;
+            border-radius: 4px; cursor: pointer; font-size: 12px;
+        }
+        hr { border: 0; border-top: 1px solid #ddd; margin: 5px 0; }
+
+        .submit-button {
+            width: 100%; padding: 15px; font-size: 18px;
+            background-color: #45c4b7; color: #fff; border: none;
+            cursor: pointer; border-radius: 5px;
+        }
+        .submit-button:hover { opacity: 0.9; }
+
+    </style>
+</head>
+
+<body>
+    <div class="side-nav" id="sideNav">
+        <a href="#section-message">
+            <span>⇩</span>
+            <i class="fas fa-comment"></i>
+        </a>
+    </div>
+
+    <div class="container">
+        <h1>
+            <span style="font-size: 16px;">店舗名</span><br>
+            ハウスクリーン四万十
+        </h1>
+
+        <div class="label">お名前<span class="required">必須</span></div>
+        <input type="text" id="name" placeholder="お名前を入力してください" oninput="saveInput('name')">
+
+        <div class="label">電話番号<span class="required">必須</span></div>
+        <input type="tel" id="phone" placeholder="電話番号を入力してください" oninput="saveInput('phone')">
+
+        <div class="label">訪問先住所<span class="required">必須</span></div>
+        <input type="text" id="address" placeholder="訪問先の住所を入力してください" oninput="saveInput('address')">
+
+        <div class="label">駐車場の有無<span class="required">必須</span></div>
+        <div class="parking-buttons">
+            <button type="button" onclick="selectParking('有')">有</button>
+            <button type="button" onclick="selectParking('無')">無</button>
+        </div>
+        <input type="hidden" id="parkingValue">
+
+        <div class="label" id="menu-area">メニュー選択<span style="font-size:0.7em; margin-left:10px;">(複数選択可)</span></div>
+
+        <h3 class="category-title">■ エアコンクリーニング</h3>
+        <h4 class="sub-title">メニュー</h4>
+        <div class="buttons-grid menu-list">
+            <button type="button" data-name="スタンダードクリーニング" data-time="120" data-price="0" onclick="toggleSelection(this, 'menu')">スタンダードクリーニング<br><span style="font-size:0.85em;">(約2時間)</span></button>
+            <button type="button" data-name="家庭用天井埋込タイプ" data-time="180" data-price="0" onclick="toggleSelection(this, 'menu')">家庭用天井埋込タイプ<br><span style="font-size:0.85em;">(約2〜3.5時間)</span></button>
+            <button type="button" data-name="業務用エアコンクリーニング" data-time="180" data-price="0" onclick="toggleSelection(this, 'menu')">業務用エアコン<br><span style="font-size:0.85em;">(約3時間〜)</span></button>
+        </div>
+
+        <h3 class="category-title">■ 換気扇クリーニング</h3>
+        <h4 class="sub-title">メニュー</h4>
+        <div class="buttons-grid menu-list">
+            <button type="button" data-name="換気扇クリーニング" data-time="120" data-price="0" onclick="toggleSelection(this, 'menu')">換気扇クリーニング<br><span style="font-size:0.85em;">(約2時間)</span></button>
+        </div>
+        <h4 class="sub-title">オプション</h4>
+        <div class="buttons-grid option-list">
+            <button type="button" data-name="換気扇:お掃除機能付き" data-price="6600" onclick="toggleSelection(this, 'option')">お掃除機能付き<br>+6,600円/1台</button>
+            <button type="button" data-name="換気扇:強い油汚れの除去" data-price="3300" onclick="toggleSelection(this, 'option')">強い油汚れの除去<br>+3,300円/1台</button>
+            <button type="button" data-name="換気扇:コンロセット" data-price="5500" onclick="toggleSelection(this, 'option')">コンロセット<br>+5,500円</button>
+            <button type="button" data-name="換気扇:時間超過(1H/1台)" data-price="3300" onclick="toggleSelection(this, 'option')">時間超過(1H/1台)<br>+3,300円</button>
+            <button type="button" data-name="換気扇:アイランド型" data-price="2200" onclick="toggleSelection(this, 'option')">アイランド型<br>+2,200円/1台</button>
+        </div>
+
+        <h3 class="category-title">■ キッチンクリーニング</h3>
+        <h4 class="sub-title">メニュー</h4>
+        <div class="buttons-grid menu-list">
+            <button type="button" data-name="キッチンクリーニング" data-time="120" data-price="0" onclick="toggleSelection(this, 'menu')">キッチンクリーニング<br><span style="font-size:0.85em;">(約2時間)</span></button>
+        </div>
+        <h4 class="sub-title">オプション</h4>
+        <div class="buttons-grid option-list">
+            <button type="button" data-name="キッチン:3.5m以上またはL字型" data-price="5500" onclick="toggleSelection(this, 'option')">3.5m以上またはL字型<br>+5,500円</button>
+            <button type="button" data-name="キッチン:シンク研磨＆撥水" data-price="4400" onclick="toggleSelection(this, 'option')">シンク研磨＆撥水コート<br>+4,400円</button>
+            <button type="button" data-name="キッチン:壁紙染色(10平米以下)" data-price="13200" onclick="toggleSelection(this, 'option')">壁紙染色(10平米以下)<br>+13,200円</button>
+        </div>
+
+        <h3 class="category-title">■ 風呂・浴室クリーニング</h3>
+        <h4 class="sub-title">メニュー</h4>
+        <div class="buttons-grid menu-list">
+            <button type="button" data-name="風呂・浴室クリーニング" data-time="120" data-price="0" onclick="toggleSelection(this, 'menu')">風呂・浴室クリーニング<br><span style="font-size:0.85em;">(約2時間)</span></button>
+        </div>
+        <h4 class="sub-title">オプション</h4>
+        <div class="buttons-grid option-list">
+            <button type="button" data-name="浴室:エプロン内部洗浄" data-price="3300" onclick="toggleSelection(this, 'option')">エプロン内部洗浄<br>+3,300円</button>
+            <button type="button" data-name="浴室:エプロン高圧+防カビ" data-price="7700" onclick="toggleSelection(this, 'option')">エプロン高圧+防カビ<br>+7,700円</button>
+            <button type="button" data-name="浴室:鏡水アカ+コーティング" data-price="3300" onclick="toggleSelection(this, 'option')">鏡水アカ+コーティング<br>+3,300円</button>
+            <button type="button" data-name="浴室:浴室防カビコート" data-price="3300" onclick="toggleSelection(this, 'option')">浴室防カビコート<br>+3,300円</button>
+            <button type="button" data-name="浴室:1坪以上・タイル壁" data-price="5500" onclick="toggleSelection(this, 'option')">1坪以上・タイル壁<br>+5,500円</button>
+            <button type="button" data-name="浴室:特殊水アカ除去(0.5平米)" data-price="3300" onclick="toggleSelection(this, 'option')">特殊水アカ除去(0.5平米)<br>+3,300円</button>
+            <button type="button" data-name="浴室:1坪超過(1平米ごと)" data-price="3300" onclick="toggleSelection(this, 'option')">1坪超過(1平米ごと)<br>+3,300円</button>
+            <button type="button" data-name="浴室:浴室乾燥機クリーニング" data-price="7700" onclick="toggleSelection(this, 'option')">浴室乾燥機クリーニング<br>+7,700円</button>
+            <button type="button" data-name="浴室:浴室換気扇 内部" data-price="5500" onclick="toggleSelection(this, 'option')">浴室換気扇 内部(1台)<br>+5,500円</button>
+            <button type="button" data-name="浴室:時間超過(1時間ごと)" data-price="3300" onclick="toggleSelection(this, 'option')">時間超過(1時間ごと)<br>+3,300円</button>
+        </div>
+
+        <h3 class="category-title">■ トイレ・洗面所クリーニング</h3>
+        <h4 class="sub-title">メニュー</h4>
+        <div class="buttons-grid menu-list">
+            <button type="button" data-name="トイレクリーニング" data-time="90" data-price="0" onclick="toggleSelection(this, 'menu')">トイレクリーニング<br><span style="font-size:0.85em;">(約1時間30分)</span></button>
+            <button type="button" data-name="洗面台クリーニング" data-time="60" data-price="0" onclick="toggleSelection(this, 'menu')">洗面台クリーニング<br><span style="font-size:0.85em;">(約1時間)</span></button>
+        </div>
+        <h4 class="sub-title">オプション</h4>
+        <div class="buttons-grid option-list">
+            <button type="button" data-name="トイレ:同室内 便器追加" data-price="5500" onclick="toggleSelection(this, 'option')">同室内 便器追加(1基)<br>+5,500円</button>
+            <button type="button" data-name="トイレ:床ワックス塗布" data-price="1100" onclick="toggleSelection(this, 'option')">床ワックス塗布<br>+1,100円</button>
+            <button type="button" data-name="トイレ:壁紙染色(10平米以下)" data-price="13200" onclick="toggleSelection(this, 'option')">壁紙染色(10平米以下)<br>+13,200円</button>
+            <button type="button" data-name="洗面所:洗面台横幅1.2m以上" data-price="2200" onclick="toggleSelection(this, 'option')">洗面台横幅1.2m以上<br>+2,200円</button>
+        </div>
+
+        <h3 class="category-title">■ ハウスクリーニング</h3>
+        <h4 class="sub-title">メニュー</h4>
+        <div class="buttons-grid menu-list">
+            <button type="button" data-name="洗濯機クリーニング(縦型)" data-time="120" data-price="0" onclick="toggleSelection(this, 'menu')">洗濯機クリーニング<br><span style="font-size:0.85em;">(縦型・約2時間)</span></button>
+            <button type="button" data-name="フローリングクリーニング" data-time="120" data-price="0" onclick="toggleSelection(this, 'menu')">フローリング清掃<br><span style="font-size:0.85em;">(約2時間)</span></button>
+            <button type="button" data-name="壁紙染色" data-time="180" data-price="0" onclick="toggleSelection(this, 'menu')">壁紙染色<br><span style="font-size:0.85em;">(約3時間)</span></button>
+            <button type="button" data-name="その他のクリーニング" data-time="0" data-price="0" onclick="toggleSelection(this, 'menu')">その他のクリーニング</button>
+            <button type="button" data-name="お家まるごとパック" data-time="0" data-price="0" onclick="toggleSelection(this, 'menu')">お家まるごとパック<br><span style="font-size:0.85em;">(引越前後・在宅)</span></button>
+        </div>
+
+        <h3 class="category-title">■ 家事代行サービス</h3>
+        <h4 class="sub-title">メニュー</h4>
+        <div class="buttons-grid menu-list">
+            <button type="button" data-name="家事代行サービス" data-time="120" data-price="0" onclick="toggleSelection(this, 'menu')">家事代行サービス<br><span style="font-size:0.85em;">(2時間〜/スタッフ1名)</span></button>
+        </div>
+
+
+        <div class="labelkibounitizi" id="kibou1">第一希望日時<span class="required">必須</span></div>
+        <div class="datetime-wrapper">
+            <span class="placeholder" id="placeholder1">⇩タップして日時を選択⇩</span>
+            <input type="hidden" id="date1">
+            <div class="dt-grid">
+                <select id="date1_day" class="datetime-input"></select>
+                <select id="date1_time" class="datetime-input"></select>
+            </div>
+        </div>
+
+        <div class="labelkibounitizi" id="kibou2">第二希望日時<span class="required">必須</span></div>
+        <div class="datetime-wrapper">
+            <span class="placeholder" id="placeholder2">⇩タップして日時を選択⇩</span>
+            <input type="hidden" id="date2">
+            <div class="dt-grid">
+                <select id="date2_day" class="datetime-input"></select>
+                <select id="date2_time" class="datetime-input"></select>
+            </div>
+        </div>
+
+        <div class="labelkibounitizi" id="kibou3">第三希望日時<span style="font-size: 0.7em; margin-left: 5px; color: #fff;">(任意)</span></div>
+        <div class="datetime-wrapper">
+            <span class="placeholder" id="placeholder3">⇩タップして日時を選択⇩</span>
+            <input type="hidden" id="date3">
+            <div class="dt-grid">
+                <select id="date3_day" class="datetime-input"></select>
+                <select id="date3_time" class="datetime-input"></select>
+            </div>
+        </div>
+
+        <div class="labelmessezi">備考</div>
+        <textarea id="message" rows="4" placeholder="ご質問やご要望があればご記入ください"></textarea>
+
+        <div class="labeltyuuou">ご予約内容確認</div>
+        <div id="displayInfo"></div>
+
+        <button class="submit-button" onclick="submitForm()" id="section-message">予約を行う</button>
+    </div>
+
+    <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <script>
+        // 設定: 営業時間 (全日 09:00 - 18:00)
+        const OPEN_HOUR = 9;
+        const CLOSE_HOUR = 18; 
+        const DAYS_AHEAD = 90;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // LIFF初期化
+            liff.init({ liffId: '2005254357-zKma9BZk' })
+                .then(() => console.log('LIFF initialized'))
+                .catch(err => console.error('LIFF Error', err));
+
+            // 保存データ復元
+            restoreInput('name');
+            restoreInput('phone');
+            restoreInput('address');
+            
+            // 日時選択肢生成
+            ['date1', 'date2', 'date3'].forEach(id => initDateTimePicker(id));
+
+            // 初期表示更新
+            updateDisplayInfo();
+        });
+
+        // 入力保存・復元
+        function saveInput(id) {
+            localStorage.setItem(id, document.getElementById(id).value);
+            updateDisplayInfo();
+        }
+        function restoreInput(id) {
+            const val = localStorage.getItem(id);
+            if(val) document.getElementById(id).value = val;
+        }
+
+        // 駐車場選択
+        function selectParking(val) {
+            document.getElementById('parkingValue').value = val;
+            const btns = document.querySelectorAll('.parking-buttons button');
+            btns.forEach(b => {
+                if(b.textContent === val) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+            updateDisplayInfo();
+        }
+
+        // メニュー/オプション選択 (トグル方式)
+        function toggleSelection(btn, type) {
+            btn.classList.toggle('active');
+            updateDisplayInfo();
+        }
+
+        // 表示更新
+        function updateDisplayInfo() {
+            const name = document.getElementById('name').value;
+            const address = document.getElementById('address').value;
+            const parking = document.getElementById('parkingValue').value;
+
+            // 選択されたメニュー収集
+            let selectedMenus = [];
+            let totalTime = 0;
+            document.querySelectorAll('.menu-list button.active').forEach(btn => {
+                // 改行タグを除去してきれいなテキストにする
+                const cleanName = btn.innerHTML.split('<br>')[0].replace(/<[^>]*>?/gm, '');
+                selectedMenus.push(cleanName);
+                const t = parseInt(btn.getAttribute('data-time'), 10);
+                if(t) totalTime += t;
+            });
+
+            // 選択されたオプション収集
+            let selectedOptions = [];
+            let optionPrice = 0;
+            document.querySelectorAll('.option-list button.active').forEach(btn => {
+                // 改行タグを除去してきれいなテキストにする
+                const cleanName = btn.innerHTML.split('<br>')[0].replace(/<[^>]*>?/gm, '');
+                selectedOptions.push(cleanName);
+                const p = parseInt(btn.getAttribute('data-price'), 10);
+                if(p) optionPrice += p;
+            });
+
+            // 時間フォーマット
+            const h = Math.floor(totalTime / 60);
+            const m = totalTime % 60;
+            const timeStr = (h > 0 ? h + '時間' : '') + (m > 0 ? m + '分' : '') || '未定';
+
+            // 日時
+            const d1 = formatDateTime(document.getElementById('date1').value);
+            const d2 = formatDateTime(document.getElementById('date2').value);
+            const d3 = formatDateTime(document.getElementById('date3').value);
+
+            // HTML生成
+            let html = '';
+            
+            // お客様情報
+            html += `<div class="info-row"><p><span style="color:#45c4b7;"><strong>【お名前】</strong></span><br>${name || '未入力'}</p><button class="edit-button" onclick="focusEl('name')">修正</button></div><hr>`;
+            html += `<div class="info-row"><p><span style="color:#45c4b7;"><strong>【住所】</strong></span><br>${address || '未入力'}</p><button class="edit-button" onclick="focusEl('address')">修正</button></div><hr>`;
+            html += `<div class="info-row"><p><span style="color:#45c4b7;"><strong>【駐車場】</strong></span> ${parking || '未選択'}</p></div><hr>`;
+
+            // メニュー・オプション
+            const menuStr = selectedMenus.length ? selectedMenus.join('<br>') : '未選択';
+            html += `<div class="info-row"><p><span style="color:#45c4b7;"><strong>【メニュー】</strong></span><br>${menuStr}</p><button class="edit-button" onclick="focusEl('menu-area')">修正</button></div><hr>`;
+            
+            if(selectedOptions.length) {
+                html += `<div class="info-row"><p><span style="color:#45c4b7;"><strong>【オプション】</strong></span><br>${selectedOptions.join('<br>')}</p></div><hr>`;
+            }
+
+            // 合計
+            html += `<div class="info-row"><p><span style="color:#45c4b7;"><strong>【概算所要時間】</strong></span> ${timeStr}</p></div><hr>`;
+            html += `<div class="info-row"><p><span style="color:#45c4b7;"><strong>【オプション合計金額】</strong></span> +${optionPrice.toLocaleString()}円<br><small>※基本メニュー料金は含まれていません</small></p></div><hr>`;
+
+            // 日時
+            html += `<div class="info-row"><p><span style="color:#45c4b7;"><strong>【第1希望】</strong></span><br>${d1 || '未選択'}</p><button class="edit-button" onclick="focusEl('kibou1')">修正</button></div><hr>`;
+            html += `<div class="info-row"><p><span style="color:#45c4b7;"><strong>【第2希望】</strong></span><br>${d2 || '未選択'}</p><button class="edit-button" onclick="focusEl('kibou2')">修正</button></div><hr>`;
+            if(d3) {
+                html += `<div class="info-row"><p><span style="color:#45c4b7;"><strong>【第3希望】</strong></span><br>${d3}</p><button class="edit-button" onclick="focusEl('kibou3')">修正</button></div><hr>`;
+            }
+
+            document.getElementById('displayInfo').innerHTML = html;
+        }
+
+        // 要素へのスクロール
+        function focusEl(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // 日時フォーマット
+        function formatDateTime(isoStr) {
+            if (!isoStr) return '';
+            const [d, t] = isoStr.split('T');
+            const [y, m, dd] = d.split('-');
+            return `${y}年${m}月${dd}日 ${t}`;
+        }
+
+        // ---------- 日時選択ロジック ----------
+        function initDateTimePicker(baseId) {
+            const daySel = document.getElementById(`${baseId}_day`);
+            const timeSel = document.getElementById(`${baseId}_time`);
+            const hidden = document.getElementById(baseId);
+            const ph = document.getElementById(`placeholder${baseId.slice(-1)}`);
+
+            // 日付生成
+            daySel.innerHTML = '<option value="" disabled selected>日付を選択</option>';
+            const today = new Date();
+            const JP_WD = ['日', '月', '火', '水', '木', '金', '土'];
+            
+            for(let i=1; i<=DAYS_AHEAD; i++) {
+                const d = new Date(today);
+                d.setDate(today.getDate() + i);
+                const y = d.getFullYear();
+                const m = ('0'+(d.getMonth()+1)).slice(-2);
+                const dd = ('0'+d.getDate()).slice(-2);
+                const wd = d.getDay();
+                const val = `${y}-${m}-${dd}`;
+                const txt = `${m}/${dd} (${JP_WD[wd]})`;
+                const opt = document.createElement('option');
+                opt.value = val;
+                opt.textContent = txt;
+                daySel.appendChild(opt);
+            }
+
+            // 日付変更時
+            daySel.addEventListener('change', () => {
+                // 時間生成 (全日 9:00 - 18:00)
+                timeSel.innerHTML = '<option value="" disabled selected>時間を選択</option>';
+                for(let h=OPEN_HOUR; h<=CLOSE_HOUR; h++) {
+                    ['00', '30'].forEach(min => {
+                        // 18:30などは営業時間外なら除外
+                        if(h === CLOSE_HOUR && min === '30') return; 
+                        const t = `${('0'+h).slice(-2)}:${min}`;
+                        const opt = document.createElement('option');
+                        opt.value = t;
+                        opt.textContent = t;
+                        timeSel.appendChild(opt);
+                    });
+                }
+                syncHidden();
+            });
+
+            timeSel.addEventListener('change', syncHidden);
+
+            function syncHidden() {
+                const d = daySel.value;
+                const t = timeSel.value;
+                if(d && t) {
+                    hidden.value = `${d}T${t}`;
+                    ph.style.display = 'none';
+                } else {
+                    hidden.value = '';
+                    ph.style.display = 'block';
+                }
+                updateDisplayInfo();
+            }
+        }
+
+
+        // 送信処理
+        function submitForm() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const parking = document.getElementById('parkingValue').value;
+            const d1 = document.getElementById('date1').value;
+            const d2 = document.getElementById('date2').value;
+            const d3 = document.getElementById('date3').value;
+            const msg = document.getElementById('message').value;
+
+            // 必須チェック
+            if(!name) return alert('「お名前」は必須です');
+            if(!phone) return alert('「電話番号」は必須です');
+            if(!address) return alert('「訪問先住所」は必須です');
+            if(!parking) return alert('「駐車場の有無」は必須です');
+            
+            // メニューチェック
+            const selectedMenus = [];
+            document.querySelectorAll('.menu-list button.active').forEach(btn => {
+                // 送信時はきれいなテキストのみ
+                selectedMenus.push(btn.innerHTML.split('<br>')[0].replace(/<[^>]*>?/gm, ''));
+            });
+            if(selectedMenus.length === 0) return alert('メニューを1つ以上選択してください');
+
+            if(!d1) return alert('「第一希望日時」は必須です');
+            if(!d2) return alert('「第二希望日時」は必須です');
+
+            // オプション
+            const selectedOptions = [];
+            document.querySelectorAll('.option-list button.active').forEach(btn => {
+                selectedOptions.push(btn.innerHTML.split('<br>')[0].replace(/<[^>]*>?/gm, ''));
+            });
+
+            // 送信テキスト作成
+            const text = [
+                '【予約フォーム送信】',
+                '',
+                '《お客様情報》',
+                `名　前：${name}`,
+                `電　話：${phone}`,
+                `住　所：${address}`,
+                `駐車場：${parking}`,
+                '',
+                '《ご依頼内容》',
+                `■メニュー：\n${selectedMenus.join('\n')}`,
+                selectedOptions.length ? `■オプション：\n${selectedOptions.join('\n')}` : '■オプション：なし',
+                '',
+                '《希望日時》',
+                `第一：${formatDateTime(d1)}`,
+                `第二：${formatDateTime(d2)}`,
+                d3 ? `第三：${formatDateTime(d3)}` : '第三：指定なし',
+                '',
+                '《備考》',
+                msg || 'なし'
+            ].join('\n');
+
+            // LIFF送信
+            if (!liff.isInClient()) {
+                alert('LINEアプリ内から開いてください。\n\n-- 送信内容イメージ --\n' + text);
+                return;
+            }
+
+            liff.sendMessages([{ type: 'text', text: text }])
+                .then(() => {
+                    alert('予約リクエストを送信しました。店舗からの連絡をお待ちください。');
+                    liff.closeWindow();
+                })
+                .catch(err => {
+                    alert('送信に失敗しました。');
+                    console.error(err);
+                });
+        }
+
+        // スムーズスクロール
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if(target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+    </script>
+</body>
+</html>
