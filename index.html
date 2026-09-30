@@ -468,6 +468,7 @@
                         <div class="select-btn" onclick="toggleBtn(this, 'menu')">
                             <h5>スタンダードクリーニング</h5>
                             <p>（作業時間：約2時間）</p>
+                            <div class="price">11,000円</div>
                             <div class="unit-input-wrapper" onclick="event.stopPropagation()">
                                 <input type="number" class="unit-input" placeholder="0" min="1"
                                     oninput="validateForm()">
@@ -477,6 +478,7 @@
                         <div class="select-btn" onclick="toggleBtn(this, 'menu')">
                             <h5>家庭用天井埋込タイプ</h5>
                             <p>（作業時間：約2〜3時間30分）</p>
+                            <div class="price">27,500円</div>
                             <div class="unit-input-wrapper" onclick="event.stopPropagation()">
                                 <input type="number" class="unit-input" placeholder="0" min="1"
                                     oninput="validateForm()">
@@ -486,6 +488,7 @@
                         <div class="select-btn" onclick="toggleBtn(this, 'menu')">
                             <h5>業務用エアコンクリーニング</h5>
                             <p>（作業時間：約3時間〜）</p>
+                            <div class="price">33,000円</div>
                             <div class="unit-input-wrapper" onclick="event.stopPropagation()">
                                 <input type="number" class="unit-input" placeholder="0" min="1"
                                     oninput="validateForm()">
@@ -506,6 +509,7 @@
                         <div class="select-btn" onclick="toggleBtn(this, 'menu')">
                             <h5>換気扇クリーニング</h5>
                             <p>（作業時間：約2時間）</p>
+                            <div class="price">17,600円</div>
                         </div>
                     </div>
                     <p style="font-size:12px; font-weight:bold; margin:10px 0 5px;">▼ オプション</p>
@@ -544,6 +548,7 @@
                         <div class="select-btn" onclick="toggleBtn(this, 'menu')">
                             <h5>キッチンクリーニング</h5>
                             <p>（作業時間：約2時間）</p>
+                            <div class="price">18,150円</div>
                         </div>
                     </div>
                     <p style="font-size:12px; font-weight:bold; margin:10px 0 5px;">▼ オプション</p>
@@ -574,6 +579,11 @@
                         <div class="select-btn" onclick="toggleBtn(this, 'menu')">
                             <h5>風呂・浴室クリーニング</h5>
                             <p>（作業時間：約2時間）</p>
+                            <div class="price">17,600円</div>
+                        </div>
+                        <div class="select-btn" onclick="toggleBtn(this, 'menu')">
+                            <h5>浴室乾燥機クリーニング</h5>
+                            <div class="price">11,000円</div>
                         </div>
                     </div>
                     <p style="font-size:12px; font-weight:bold; margin:10px 0 5px;">▼ オプション</p>
@@ -632,10 +642,12 @@
                         <div class="select-btn" onclick="toggleBtn(this, 'menu')">
                             <h5>トイレクリーニング</h5>
                             <p>（作業時間：約1時間30分）</p>
+                            <div class="price">9,900円</div>
                         </div>
                         <div class="select-btn" onclick="toggleBtn(this, 'menu')">
                             <h5>洗面台クリーニング</h5>
                             <p>（作業時間：約1時間）</p>
+                            <div class="price">9,350円</div>
                         </div>
                     </div>
                     <p style="font-size:12px; font-weight:bold; margin:10px 0 5px;">▼ オプション</p>
@@ -670,25 +682,31 @@
                         <div class="select-btn" onclick="toggleBtn(this, 'menu')">
                             <h5>洗濯機クリーニング（縦型）</h5>
                             <p>（約2時間）</p>
+                            <div class="price">12,100円</div>
                         </div>
                         <div class="select-btn" onclick="toggleBtn(this, 'menu')">
                             <h5>フローリングクリーニング</h5>
                             <p>（約2時間）</p>
+                            <div class="price">13,200円</div>
                         </div>
                         <div class="select-btn" onclick="toggleBtn(this, 'menu')">
                             <h5>壁紙染色</h5>
                             <p>（約3時間）</p>
+                            <div class="price">22,000円</div>
                         </div>
                         <div class="select-btn" onclick="toggleBtn(this, 'menu')">
                             <h5>その他のクリーニング</h5>
+                            <div class="price">応談</div>
                         </div>
                         <div class="select-btn" onclick="toggleBtn(this, 'menu')">
                             <h5>お家まるごとパック</h5>
                             <p>（引越し前後・在宅）</p>
+                            <div class="price">応談</div>
                         </div>
                         <div class="select-btn" onclick="toggleBtn(this, 'menu')">
                             <h5>家事代行サービス</h5>
                             <p>（1時間／スタッフ1名・2時間以上から利用）</p>
+                            <div class="price">5,500円〜</div>
                         </div>
                     </div>
                 </div>
@@ -893,20 +911,51 @@
             const d3 = document.getElementById('date3').value;
             const msg = document.getElementById('message').value;
 
-            // 選択項目収集
+            // 選択項目収集（料金も集計）
+            let total = 0;            // 合計金額（数値で算出できる分）
+            let hasUnpriced = false;  // 応談・「〜」など金額未確定の項目があるか
+            const getPrice = (el) => {
+                const priceEl = el.querySelector('.price');
+                if (!priceEl) return null;
+                const m = priceEl.textContent.replace(/,/g, '').match(/\d+/);
+                if (!m) return null;                       // 応談など
+                if (/[〜～]/.test(priceEl.textContent)) hasUnpriced = true; // 「5,500円〜」は最低額で計上
+                return parseInt(m[0], 10);
+            };
+
             const menus = [];
             document.querySelectorAll('.menu-list .select-btn[data-selected="true"]').forEach(el => {
                 let name = el.querySelector('h5').textContent;
                 const unitInput = el.querySelector('.unit-input');
+                const qty = (unitInput && unitInput.value) ? parseInt(unitInput.value, 10) : 1;
                 if (unitInput && unitInput.value) {
                     name += ` ${unitInput.value}台`; // 見やすくスペース区切り
+                }
+                const price = getPrice(el);
+                if (price === null) {
+                    hasUnpriced = true;
+                    name += '（応談）';
+                } else {
+                    const sub = price * qty;
+                    total += sub;
+                    name += `（${sub.toLocaleString()}円）`;
                 }
                 menus.push(name);
             });
             const options = [];
             document.querySelectorAll('.option-list .select-btn[data-selected="true"]').forEach(el => {
-                options.push(el.querySelector('h5').textContent);
+                let name = el.querySelector('h5').textContent;
+                const price = getPrice(el);
+                if (price === null) {
+                    hasUnpriced = true;
+                } else {
+                    total += price;
+                    name += `（${price.toLocaleString()}円）`;
+                }
+                options.push(name);
             });
+            const totalLine = `■合計料金（目安）：${total.toLocaleString()}円`
+                + (hasUnpriced ? '\n※応談・「〜」の項目は別途お見積りとなります' : '');
 
             // 送信テキスト作成
             const text = [
@@ -921,6 +970,7 @@
                 '《ご依頼内容》',
                 `■メニュー：\n${menus.join('\n')}`,
                 options.length ? `■オプション：\n${options.join('\n')}` : '■オプション：なし',
+                totalLine,
                 '',
                 '《希望日時》',
                 `第一：${formatDateTime(d1)}`,
